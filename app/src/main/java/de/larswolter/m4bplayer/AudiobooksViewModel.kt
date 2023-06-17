@@ -83,7 +83,9 @@ class AudiobooksViewModel(
 
         }
       } catch (err: Exception) {
-        error.value = err.toString()
+        if (err.message != null)
+          error.value = err.message!!
+        else error.value = err.toString()
         err.printStackTrace()
       }
       status.value = ""
@@ -149,7 +151,9 @@ class AudiobooksViewModel(
           }
         }
       } catch (err: Exception) {
-        error.value = err.toString()
+        if (err.message != null)
+          error.value = err.message!!
+        else error.value = err.toString()
         err.printStackTrace()
       }
       status.value = ""
@@ -161,7 +165,7 @@ class AudiobooksViewModel(
     val davUrl: String = sharedPreferences.getString("davUrl", "").toString()
     val username: String = sharedPreferences.getString("username", "").toString()
     val password: String = sharedPreferences.getString("password", "").toString()
-
+    if (davUrl == "") throw Exception("missing settings")
 
     val authHandler = BasicDigestAuthHandler(
       domain = null, // Optional, to only authenticate against hosts with this domain.

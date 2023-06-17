@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import com.larswolter.m4bplayer.R
 import okhttp3.HttpUrl.Companion.toHttpUrl
 
 @Preview

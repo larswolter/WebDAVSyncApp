@@ -5,7 +5,7 @@ plugins {
 
 
 android {
-    namespace 'com.larswolter.m4bplayer'
+    namespace 'de.larswolter.m4bplayer'
     compileSdk 33
     buildFeatures {
         compose = true
@@ -16,7 +16,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.larswolter.m4bplayer"
+        applicationId "de.larswolter.m4bplayer"
         minSdk 31
         targetSdk 33
         versionCode 1

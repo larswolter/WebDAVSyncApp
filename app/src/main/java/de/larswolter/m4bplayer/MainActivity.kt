@@ -5,7 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
@@ -31,19 +33,32 @@ class MainActivity : ComponentActivity() {
       MaterialTheme {
         NavHost(navController = navController, startDestination = "list") {
           composable("list") {
-            AppFrame(navController, audiobooks = viewModel, progress=status!="") {
-              Column {
-                Row(Modifier.padding(16.dp)) {
-                  Text(text="Status:")
+            AppFrame(navController, audiobooks = viewModel, progress = status != "") {
+              if (error == "missing settings") {
+                Column(Modifier.padding(16.dp)) {
+                  Text(text = "Missing a WebDav URL in the settings, please configure your remote setup")
+                  Button(
+                    onClick = { navController.navigate("settings") },
+                    modifier = Modifier.fillMaxWidth(),
 
-                  if(error!="") Text(text=error, color = Color.Red)
-                  if(status!="") {
-                    Text(text = status, color = Color.Gray, modifier=Modifier.weight(0.7f))
+                    ) {
+                    Text(text = "Settings")
                   }
                 }
-                AudiobookList(
-                  list = list,
-                )
+              } else {
+                Column {
+                  Row(Modifier.padding(16.dp)) {
+                    Text(text = "Status:")
+
+                    if (error != "") Text(text = error, color = Color.Red)
+                    if (status != "") {
+                      Text(text = status, color = Color.Gray, modifier = Modifier.weight(0.7f))
+                    }
+                  }
+                  AudiobookList(
+                    list = list,
+                  )
+                }
               }
             }
           }
