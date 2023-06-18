@@ -1,4 +1,4 @@
-package de.larswolter.m4bplayer
+package de.larswolter.m4bapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

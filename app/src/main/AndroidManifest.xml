@@ -12,7 +12,7 @@
         android:icon="@drawable/icon"
         tools:targetApi="31">
         <activity
-            android:name="de.larswolter.m4bplayer.MainActivity"
+            android:name="de.larswolter.m4bapp.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
