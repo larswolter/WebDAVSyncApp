@@ -38,13 +38,14 @@ import androidx.navigation.NavController
 @Composable
 fun AppFrame(
   navController: NavController,
-  audiobooks: AudiobooksViewModel? = null,
+  audiobooks: AudiobooksViewModel,
   progress: Boolean = false,
+  back: Boolean = false,
   content: @Composable () -> Unit
 ) {
   var expanded by remember { mutableStateOf(false) }
   val snackbarHostState = remember { SnackbarHostState() }
-  
+
   Scaffold(
     snackbarHost = {
       SnackbarHost(hostState = snackbarHostState)
@@ -60,14 +61,17 @@ fun AppFrame(
           }
         },
         navigationIcon = {
-          if (audiobooks == null) {
-            IconButton(onClick = { navController.navigateUp() }) {
+          if (back) {
+            IconButton(onClick = {
+              navController.navigateUp()
+              audiobooks.check()
+            }) {
               Icon(Icons.Default.ArrowBack, contentDescription = "Back")
             }
           }
         },
         actions = {
-          if (audiobooks != null) {
+          if (!back) {
             IconButton(onClick = { expanded = true }) {
               Icon(Icons.Default.MoreVert, contentDescription = "Options")
             }
@@ -97,7 +101,7 @@ fun AppFrame(
     },
 
     floatingActionButton = {
-      if (audiobooks != null) {
+      if (!back) {
         Button(
           onClick = { audiobooks.download(snackbarHostState) },
           modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 56.dp),

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,8 +51,11 @@ fun Settings(application: Application) {
       Modifier
         .fillMaxSize()
         .padding(16.dp)) {
-
+      Row(Modifier.fillMaxWidth().padding(vertical = 16.dp)) {
+        Text(text="Enter valid webdav url and credentials. The URL must contain the target Folder.")
+      }
       OutlinedTextField(
+        modifier=Modifier.fillMaxWidth(),
         value = davUrl,
         onValueChange = {
           davUrl = it
@@ -61,6 +65,7 @@ fun Settings(application: Application) {
         label = { Text("WebDAV URL") }
       )
       OutlinedTextField(
+        modifier=Modifier.fillMaxWidth(),
         value = username,
         onValueChange = {
           username = it
@@ -70,6 +75,7 @@ fun Settings(application: Application) {
         label = { Text("Username") }
       )
       OutlinedTextField(
+        modifier=Modifier.fillMaxWidth(),
         value = password,
         onValueChange = {
           password = it

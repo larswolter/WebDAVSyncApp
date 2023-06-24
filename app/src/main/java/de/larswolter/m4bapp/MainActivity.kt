@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
             }
           }
           composable("settings") {
-            AppFrame(navController) {
+            AppFrame(navController, audiobooks = viewModel, back = true) {
               Settings(application)
             }
           }
