@@ -1,4 +1,4 @@
-package de.larswolter.m4bapp
+package de.larswolter.davsyncapp
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,7 +39,7 @@ fun AudiobookList(list: List<Audiobook>) {
       if (x.localUri != null) localColor = Color.Black
       var remoteColor = Color.Gray
       if (x.remoteUri != null) remoteColor = Color.Black
-      var supportingText = ""
+      var supportingText = x.status+" - "
       if (x.remoteType != null) supportingText += x.remoteType.toString() + "  "
       if (x.remoteModified != null) supportingText += DateFormat.getDateInstance()
         .format(x.remoteModified!!) + "  "

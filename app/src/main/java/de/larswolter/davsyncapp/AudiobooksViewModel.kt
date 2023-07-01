@@ -1,10 +1,11 @@
-package de.larswolter.m4bapp
+package de.larswolter.davsyncapp
 
 import android.app.Application
 import android.content.ContentUris
 import android.content.ContentValues
 import android.net.Uri
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,6 +27,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import java.util.Date
+
 
 data class Audiobook(
   var localUri: Uri? = null,
@@ -63,6 +65,7 @@ class AudiobooksViewModel(
   }
 
   fun checkRemote() {
+    println("checking remote")
     _files.value.forEach { a -> a.remoteUri = null }
 
     viewModelScope.launch(Dispatchers.IO) {
@@ -117,6 +120,7 @@ class AudiobooksViewModel(
   }
 
   fun checkLocal() {
+    println("checking local")
     _files.value.forEach { a -> a.localUri = null }
     viewModelScope.launch(Dispatchers.IO) {
       status.value = "checking local"
@@ -131,7 +135,8 @@ class AudiobooksViewModel(
           MediaStore.Audio.Media._ID,
           MediaStore.Audio.Media.DISPLAY_NAME,
           MediaStore.Audio.Media.DATE_MODIFIED,
-          MediaStore.Audio.Media.SIZE
+          MediaStore.Audio.Media.SIZE,
+          MediaStore.Audio.Media.RELATIVE_PATH
         )
 
         // Display files in alphabetical order based on their display name.
@@ -140,7 +145,7 @@ class AudiobooksViewModel(
         val query = resolver.query(
           audioCollection,
           projection,
-          "${MediaStore.Audio.Media.DISPLAY_NAME} like '%.m4b' AND ${MediaStore.Audio.Media.RELATIVE_PATH} = 'Audiobooks'",
+          MediaStore.Audio.Media.DISPLAY_NAME+" like '%.m4b' ",
           null,
           sortOrder
         )
@@ -156,6 +161,7 @@ class AudiobooksViewModel(
             val id = cursor.getLong(idColumn)
             val name = cursor.getString(nameColumn)
             val size = cursor.getInt(sizeColumn)
+            println("local:"+name+", "+size)
 
             val contentUri: Uri = ContentUris.withAppendedId(
               MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -255,21 +261,38 @@ class AudiobooksViewModel(
             .insert(audioCollection, audiobookProps)
 // "w" for write.
           if (localUri != null) {
-            println("Downloading " + localUri.lastPathSegment)
-            if (localUri.lastPathSegment != file.name) {
+            val cursor = resolver.query(localUri, null, null, null, null)
+            var localFilename = ""
+            try {
+              if (cursor != null && cursor.moveToFirst()) {
+                localFilename =
+                  cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+              }
+            } finally {
+              cursor!!.close()
+            }
+            if (localFilename != file.name) {
               resolver.delete(localUri, null)
               file.status = "file already exists, but cannot be accessed"
               file.error = true
               _files.value =
                 _files.value.map { if (it.name == file.name) file else it }
+              println(file.status + ": '" + file.name + "' <-> '" + localFilename + "'")
 
-            } else
+            } else {
+              println("Downloading " + file.name)
               resolver.openOutputStream(localUri, "w").use { stream ->
                 if (stream != null) {
-                  fileStream.copyTo(stream)
-                  stream.close()
-                  file.status = "stored locally"
-                  file.localUri = localUri
+                  try {
+                    fileStream.copyTo(stream)
+                    stream.close()
+                    file.status = "stored locally"
+                    file.localUri = localUri
+                  }catch (err:Exception) {
+                    file.status = "Error downloading "+err.toString()
+                    file.error = true
+                    resolver.delete(localUri, null)
+                  }
                 } else {
                   file.status = "no output stream"
                   file.error = true
@@ -278,6 +301,7 @@ class AudiobooksViewModel(
                 _files.value =
                   _files.value.map { if (it.name == file.name) file else it }
               }
+            }
           }
         } else {
           file.status = "no input stream"

@@ -16,5 +16,5 @@ dependencyResolutionManagement {
     }
 
 }
-rootProject.name = "M4B App"
+rootProject.name = "WebDAV Sync App"
 include ':app'

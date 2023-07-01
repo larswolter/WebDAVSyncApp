@@ -1,4 +1,4 @@
-package de.larswolter.m4bapp
+package de.larswolter.davsyncapp
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -55,7 +55,7 @@ fun AppFrame(
       TopAppBar(
         title = {
           Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("M4B App")
+            Text("WebDAV Sync App")
             if (progress)
               CircularProgressIndicator(Modifier.size(24.dp))
           }

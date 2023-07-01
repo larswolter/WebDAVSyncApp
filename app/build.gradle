@@ -5,7 +5,7 @@ plugins {
 
 
 android {
-    namespace 'de.larswolter.m4bapp'
+    namespace 'de.larswolter.davsyncapp'
     compileSdk 33
     buildFeatures {
         compose = true
@@ -16,7 +16,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "de.larswolter.m4bapp"
+        applicationId "de.larswolter.davsyncapp"
         minSdk 31
         targetSdk 33
         versionCode 1

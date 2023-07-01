@@ -1,4 +1,4 @@
-package de.larswolter.m4bapp
+package de.larswolter.davsyncapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

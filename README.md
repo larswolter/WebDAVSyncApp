@@ -1,5 +1,6 @@
-# m4bApp
-An application to manage m4b Audiobooks. First function implemented is to synchronize files from an webdav server (Nextcloud for example)
+# WebDAVSyncAPP
+An application to sync files from a webdav server (Nextcloud for example). 
+First usage is to sync some audiobooks 
 
 ## Syncing files with Webdav
 
@@ -8,9 +9,9 @@ Use the settings page to specify the webdav URL and credentials. You can also se
 
 ## Planed features
 
-* better comparison between local and remote, not just filename but hash/filesize/modified date
-* show some more infos for files, embedded image/size/modified
-* show more progress during download
-* automatic sync in the background
+* Adding multiple sync jobs, defining file type (currently only m4b audiobook) and locations
+* Better comparison between local and remote, not just filename but hash/filesize/modified date
+* Show more progress during download
+* Automatic sync in the background
 * Make a good looking UI
-* play the files, but i think we are better of to do this with other players, like [Voice](https://github.com/PaulWoitaschek/Voice)
+* Sharing files
