@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,9 +36,9 @@ fun AudiobookList(list: List<Audiobook>) {
     }
     for (x in list) {
       var localColor = Color.Gray
-      if (x.localUri != null) localColor = Color.Green
+      if (x.localUri != null) localColor = Color.Black
       var remoteColor = Color.Gray
-      if (x.remoteUri != null) remoteColor = Color.Green
+      if (x.remoteUri != null) remoteColor = Color.Black
       var supportingText = ""
       if (x.remoteType != null) supportingText += x.remoteType.toString() + "  "
       if (x.remoteModified != null) supportingText += DateFormat.getDateInstance()
@@ -55,16 +57,24 @@ fun AudiobookList(list: List<Audiobook>) {
           supportingText = { Text(text = supportingText) },
           trailingContent = {
             Row {
-              Icon(
-                painterResource(R.drawable.baseline_sd_storage_24),
-                contentDescription = "Local available",
-                tint = localColor
-              )
-              Icon(
-                painterResource(R.drawable.baseline_cloud_24),
-                contentDescription = "Local available",
-                tint = remoteColor
-              )
+              if(x.error) {
+                Icon(
+                  Icons.Default.Warning,
+                  contentDescription = "Local available",
+                  tint = Color.Red
+                )
+              } else {
+                Icon(
+                  painterResource(R.drawable.baseline_sd_storage_24),
+                  contentDescription = "Local available",
+                  tint = localColor
+                )
+                Icon(
+                  painterResource(R.drawable.baseline_cloud_24),
+                  contentDescription = "Local available",
+                  tint = remoteColor
+                )
+              }
             }
           }
 

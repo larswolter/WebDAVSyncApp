@@ -36,8 +36,10 @@ data class Audiobook(
   var remoteSize: Long = 0,
   var remoteType: MediaType? = null,
   var name: String,
-  var status: String = ""
-)
+  var status: String = "",
+  var error: Boolean = false
+) {
+}
 
 
 class AudiobooksViewModel(
@@ -88,7 +90,7 @@ class AudiobooksViewModel(
                 remoteBook.remoteModified = Date(prop.lastModified)
               }
             }
-            println("Remote:"+ remoteBook.remoteModified.toString()+", "+ remoteBook.remoteSize.toString()+", "+ remoteBook.remoteType.toString())
+            println("Remote:" + remoteBook.remoteModified.toString() + ", " + remoteBook.remoteSize.toString() + ", " + remoteBook.remoteType.toString())
             val existing = _files.value.find({ book -> book.name == file })
             if (existing != null) {
               existing.remoteUri = remoteBook.remoteUri
@@ -253,18 +255,29 @@ class AudiobooksViewModel(
             .insert(audioCollection, audiobookProps)
 // "w" for write.
           if (localUri != null) {
-            resolver.openOutputStream(localUri, "w").use { stream ->
-              if (stream != null) {
-                fileStream.copyTo(stream)
-                stream.close()
-                file.status = "stored locally"
-                file.localUri = localUri
-              } else {
-                file.status = "no output stream"
-              }
+            println("Downloading " + localUri.lastPathSegment)
+            if (localUri.lastPathSegment != file.name) {
+              resolver.delete(localUri, null)
+              file.status = "file already exists, but cannot be accessed"
+              file.error = true
               _files.value =
                 _files.value.map { if (it.name == file.name) file else it }
-            }
+
+            } else
+              resolver.openOutputStream(localUri, "w").use { stream ->
+                if (stream != null) {
+                  fileStream.copyTo(stream)
+                  stream.close()
+                  file.status = "stored locally"
+                  file.localUri = localUri
+                } else {
+                  file.status = "no output stream"
+                  file.error = true
+                  resolver.delete(localUri, null)
+                }
+                _files.value =
+                  _files.value.map { if (it.name == file.name) file else it }
+              }
           }
         } else {
           file.status = "no input stream"
