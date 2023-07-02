@@ -1,8 +1,10 @@
 package de.larswolter.davsyncapp
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,11 +20,21 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.preference.PreferenceManager
 
 class MainActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    val getPath = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+      if(uri!= null) {
+        contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+        val prefEdit = sharedPreferences.edit()
+        prefEdit.putString("targetUri", uri.toString())
+        prefEdit.apply()
+      }
+    }
     setContent {
       val navController = rememberNavController()
       val viewModel = AudiobooksViewModel(application)
@@ -64,7 +76,7 @@ class MainActivity : ComponentActivity() {
           }
           composable("settings") {
             AppFrame(navController, audiobooks = viewModel, back = true) {
-              Settings(application)
+              Settings(application,getPath)
             }
           }
         }

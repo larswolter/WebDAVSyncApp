@@ -1,29 +1,33 @@
 package de.larswolter.davsyncapp
 
 import android.app.Application
+import android.net.Uri
+import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.preference.PreferenceManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Settings(application: Application) {
+fun Settings(application: Application, getPath: ActivityResultLauncher<Uri?>) {
   val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
   val prefEdit = sharedPreferences.edit()
   var davUrl by rememberSaveable {
@@ -41,6 +45,11 @@ fun Settings(application: Application) {
       sharedPreferences.getString("password", "").toString()
     )
   }
+  val targetUri by rememberSaveable {
+    mutableStateOf(
+      sharedPreferences.getString("targetUri", "").toString()
+    )
+  }
   var deleteLocal by rememberSaveable {
     mutableStateOf(
       sharedPreferences.getBoolean("deleteLocal", false)
@@ -50,12 +59,17 @@ fun Settings(application: Application) {
     Column(
       Modifier
         .fillMaxSize()
-        .padding(16.dp)) {
-      Row(Modifier.fillMaxWidth().padding(vertical = 16.dp)) {
-        Text(text="Enter valid webdav url and credentials. The URL must contain the target Folder.")
+        .padding(16.dp)
+    ) {
+      Row(
+        Modifier
+          .fillMaxWidth()
+          .padding(vertical = 16.dp)
+      ) {
+        Text(text = "Enter valid webdav url and credentials. The URL must contain the target Folder.")
       }
       OutlinedTextField(
-        modifier=Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         value = davUrl,
         onValueChange = {
           davUrl = it
@@ -65,7 +79,7 @@ fun Settings(application: Application) {
         label = { Text("WebDAV URL") }
       )
       OutlinedTextField(
-        modifier=Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         value = username,
         onValueChange = {
           username = it
@@ -75,8 +89,9 @@ fun Settings(application: Application) {
         label = { Text("Username") }
       )
       OutlinedTextField(
-        modifier=Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         value = password,
+        visualTransformation = PasswordVisualTransformation(),
         onValueChange = {
           password = it
           prefEdit.putString("password", it)
@@ -84,6 +99,16 @@ fun Settings(application: Application) {
         },
         label = { Text("Password") }
       )
+      Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(text = "Target Folder: " + targetUri)
+      }
+      Button(
+        onClick = {
+          getPath.launch(null)
+        },
+      ) {
+        Text(text = "Select folder")
+      }
       Row(verticalAlignment = Alignment.CenterVertically) {
         Checkbox(checked = deleteLocal, onCheckedChange = {
           deleteLocal = it

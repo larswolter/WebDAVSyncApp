@@ -3,15 +3,18 @@ package de.larswolter.davsyncapp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
@@ -63,6 +66,8 @@ fun AudiobookList(list: List<Audiobook>) {
                   contentDescription = "Local available",
                   tint = Color.Red
                 )
+              } else if(x.syncing) {
+                CircularProgressIndicator(Modifier.size(24.dp))
               } else {
                 Icon(
                   painterResource(R.drawable.baseline_sd_storage_24),
