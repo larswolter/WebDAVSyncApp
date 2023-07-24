@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         applicationId "de.larswolter.davsyncapp"
-        minSdk 31
+        minSdk 30
         targetSdk 33
         versionCode 1
         versionName "1.0"

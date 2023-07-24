@@ -35,7 +35,7 @@ fun AudiobookList(list: List<Audiobook>) {
     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
   ) {
     item {
-      Text(text = "M4B Audiobooks:$countLocal local and $countRemote remote")
+      Text(text = "Files::$countLocal local and $countRemote remote")
     }
     for (x in list) {
       var localColor = Color.Gray

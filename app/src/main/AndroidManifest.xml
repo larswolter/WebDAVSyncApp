@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:icon="@drawable/icon"
-        tools:targetApi="31">
+        tools:targetApi="30">
         <activity
             android:name="de.larswolter.davsyncapp.MainActivity"
             android:exported="true">

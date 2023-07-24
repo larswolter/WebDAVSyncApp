@@ -1,6 +1,6 @@
 # WebDAVSyncAPP
 An application to sync files from a webdav server (Nextcloud for example). 
-First usage is to sync some audiobooks 
+
 
 ## Syncing files with Webdav
 
